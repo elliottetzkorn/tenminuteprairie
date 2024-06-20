@@ -1,0 +1,199 @@
+<head>
+    <title>Ten Minute Prairie</title>
+    <meta name='viewport' content='width=device-width'>
+    <link rel='stylesheet' href='styles.css'>
+</head>
+
+<body>
+    <h1>Ten Minute Prairie</h1>
+    <p id="loading">Loading..</p>
+    <div id="imageContainer" style="display: flex; flex-wrap: wrap;"></div>
+
+
+    <script>
+        let imageMap = new Map();
+
+        imageMap.set(1, ["images/shell.png", "images/rock.png"]);
+        imageMap.set(2, ["images/sun.png", "images/moon.png"]);
+        imageMap.set(3, ["images/plugged.png", "images/unplugged.png"]);
+        imageMap.set(4, ["images/maximalist.png", "images/minimalist.png"]);
+        imageMap.set(5, ["images/dog.png", "images/cat.png"]);
+        imageMap.set(6, ["images/kiki.png", "images/booba.png"]);
+        imageMap.set(7, ["images/ferry.png", "images/train.png"]);
+        imageMap.set(8, ["images/grass.png", "images/waves.png"]);
+        imageMap.set(9, ["images/cornflowerblue.png", "images/mediumseagreen.png"]);
+        imageMap.set(10, ["images/eternal_return.png", "images/oblivion.png"]);
+        imageMap.set(11, ["images/slide.png", "images/slrrrp.png"]);
+        imageMap.set(12, ["images/reading.png", "images/fireplace.png"]);
+
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+
+        if (id == null) {
+            const url = 'https://asbgocxymqskkqspemmu.supabase.co/rest/v1/profiles?select=*';
+            const headers = {
+                'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzYmdvY3h5bXFza2txc3BlbW11Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTg2NDkyNjYsImV4cCI6MjAzNDIyNTI2Nn0.AOgA6ZXJMww0j4lNLegzowxt2kEh-oxEBTE4OkSKZys',
+                'Content-Type': 'application/json'
+            };
+
+            fetch(url, { headers })
+                .then(response => response.json()) // Parse the data as JSON
+                .then(data => {
+                    document.getElementById('loading').style.display = 'none';
+
+                    data.map(user => {
+                        let a = document.createElement('a');
+                        a.href = '?id=' + user.id;
+                        a.textContent = user.name;
+                        document.body.appendChild(a);
+                        let br = document.createElement('br');
+                        document.body.appendChild(br);
+                    });
+
+                })
+                .catch(error => console.error('Error:', error));
+
+        } else {
+            const url = 'https://asbgocxymqskkqspemmu.supabase.co/rest/v1/profiles?select=*&id=eq.' + id;
+            const headers = {
+                'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzYmdvY3h5bXFza2txc3BlbW11Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTg2NDkyNjYsImV4cCI6MjAzNDIyNTI2Nn0.AOgA6ZXJMww0j4lNLegzowxt2kEh-oxEBTE4OkSKZys',
+                'Content-Type': 'application/json'
+            };
+
+            let firstData = null;
+
+            fetch(url, { headers })
+                .then(response => response.json()) // Parse the data as JSON
+                .then(data => {
+                    firstData = data;
+                    const secondUrl = 'https://asbgocxymqskkqspemmu.supabase.co/rest/v1/profiles?select=*&id=eq.' + firstData[0].match_id;
+                    return fetch(secondUrl, { headers })
+                })
+                .then(response => response.json()) // Parse the second response as JSON
+                .then(secondData => {
+                    document.getElementById('loading').style.display = 'none';
+
+                    let container = document.getElementById('imageContainer');
+
+                    let title1 = document.createElement('h2');
+                    title1.textContent = firstData[0].name;
+                    title1.style.width = '50%';
+                    container.appendChild(title1);
+
+                    let title2 = document.createElement('h2');
+                    title2.textContent = secondData[0].name;
+                    title2.style.width = '50%';
+                    container.appendChild(title2);
+
+                    imageMap.forEach((value, key) => {
+                        let img1 = document.createElement('img');
+                        img1.src = value[0];
+                        img1.style.width = '50%';
+
+
+                        let img2 = document.createElement('img');
+                        img2.src = value[0];
+                        img2.style.width = '50%';
+
+
+                        let img3 = document.createElement('img');
+                        img3.src = value[1];
+                        img3.style.width = '50%';
+
+
+                        let img4 = document.createElement('img');
+                        img4.src = value[1];
+                        img4.style.width = '50%';
+
+                        switch (key) {
+                            case 1:
+                                img1.style.opacity = (100 - firstData[0].q1) / 100.0;
+                                img2.style.opacity = (100 - secondData[0].q1) / 100.0;
+                                img3.style.opacity = firstData[0].q1 / 100.0;
+                                img4.style.opacity = secondData[0].q1 / 100.0;
+                                break;
+                            case 2:
+                                img1.style.opacity = (100 - firstData[0].q2) / 100.0;
+                                img2.style.opacity = (100 - secondData[0].q2) / 100.0;
+                                img3.style.opacity = firstData[0].q2 / 100.0;
+                                img4.style.opacity = secondData[0].q2 / 100.0;
+                                break;
+                            case 3:
+                                img1.style.opacity = (100 - firstData[0].q3) / 100.0;
+                                img2.style.opacity = (100 - secondData[0].q3) / 100.0;
+                                img3.style.opacity = firstData[0].q3 / 100.0;
+                                img4.style.opacity = secondData[0].q3 / 100.0;
+                                break;
+                            case 4:
+                                img1.style.opacity = (100 - firstData[0].q4) / 100.0;
+                                img2.style.opacity = (100 - secondData[0].q4) / 100.0;
+                                img3.style.opacity = firstData[0].q4 / 100.0;
+                                img4.style.opacity = secondData[0].q4 / 100.0;
+                                break;
+                            case 5:
+                                img1.style.opacity = (100 - firstData[0].q5) / 100.0;
+                                img2.style.opacity = (100 - secondData[0].q5) / 100.0;
+                                img3.style.opacity = firstData[0].q5 / 100.0;
+                                img4.style.opacity = secondData[0].q5 / 100.0;
+                                break;
+                            case 6:
+                                img1.style.opacity = (100 - firstData[0].q6) / 100.0;
+                                img2.style.opacity = (100 - secondData[0].q6) / 100.0;
+                                img3.style.opacity = firstData[0].q6 / 100.0;
+                                img4.style.opacity = secondData[0].q6 / 100.0;
+                                break;
+                            case 7:
+                                img1.style.opacity = (100 - firstData[0].q7) / 100.0;
+                                img2.style.opacity = (100 - secondData[0].q7) / 100.0;
+                                img3.style.opacity = firstData[0].q7 / 100.0;
+                                img4.style.opacity = secondData[0].q7 / 100.0;
+                                break;
+                            case 8:
+                                img1.style.opacity = (100 - firstData[0].q8) / 100.0;
+                                img2.style.opacity = (100 - secondData[0].q8) / 100.0;
+                                img3.style.opacity = firstData[0].q8 / 100.0;
+                                img4.style.opacity = secondData[0].q8 / 100.0;
+                                break;
+                            case 9:
+                                img1.style.opacity = (100 - firstData[0].q9) / 100.0;
+                                img2.style.opacity = (100 - secondData[0].q9) / 100.0;
+                                img3.style.opacity = firstData[0].q9 / 100.0;
+                                img4.style.opacity = secondData[0].q9 / 100.0;
+                                break;
+                            case 10:
+                                img1.style.opacity = (100 - firstData[0].q10) / 100.0;
+                                img2.style.opacity = (100 - secondData[0].q10) / 100.0;
+                                img3.style.opacity = firstData[0].q10 / 100.0;
+                                img4.style.opacity = secondData[0].q10 / 100.0;
+                                break;
+                            case 11:
+                                img1.style.opacity = (100 - firstData[0].q11) / 100.0;
+                                img2.style.opacity = (100 - secondData[0].q11) / 100.0;
+                                img3.style.opacity = firstData[0].q11 / 100.0;
+                                img4.style.opacity = secondData[0].q11 / 100.0;
+                                break;
+                            case 12:
+                                img1.style.opacity = (100 - firstData[0].q12) / 100.0;
+                                img2.style.opacity = (100 - secondData[0].q12) / 100.0;
+                                img3.style.opacity = firstData[0].q12 / 100.0;
+                                img4.style.opacity = secondData[0].q12 / 100.0;
+                                break;
+                        }
+
+                        container.appendChild(img1);
+                        container.appendChild(img2);
+                        container.appendChild(img3);
+                        container.appendChild(img4);
+
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+
+
+
+
+
+    </script>
+</body>
