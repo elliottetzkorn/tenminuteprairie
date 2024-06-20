@@ -7,10 +7,6 @@ body {
     line-height: 1.5rem;
 }
 
-/* h2 {
-    text-align: center;
-} */
-
 @media (max-width:816px) {
     body {
         padding: 1rem 1rem 2rem;
